@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Gamble</title>
+    <style>
+        body {
+            transition: background-color 0.8s ease, color 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            background-color: rgb(255, 255, 255);
+            overflow: hidden;
+        }
+
+        #fact-display {
+            max-width: 700px;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            padding: 20px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: transparent;
+            border: 2px solid #000;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        /* The Secret Button */
+        #secret-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: none; /* Hidden by default */
+            padding: 10px;
+            background: gold;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px gold;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .glitch { animation: glitch 0.2s infinite; color: #ff0000 !important; }
+        @keyframes glitch {
+            0% { transform: translate(2px, 0); }
+            50% { transform: translate(-2px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="secret-btn" onclick="activateSecret()">✨</button>
+    <div id="fact-display">Careful what you seek.</div>
+    <button id="btn" class="main-btn" onclick="nextFact()">PROCEED</button>
+
+    <script>
+        let step = 0;
+        let isSecretActive = false;
+        
+        const scaryFacts = [
+            "Your brain can remain conscious for up to 20 seconds after decapitation.",
+            "There are parasites that replace a fish's tongue and live in its mouth.",
+            "A person has roughly 2 to 5 pounds of bacteria living inside them right now.",
+            "Some tumors can grow hair, teeth, and even eyes. They are called teratomas.",
+            "The 'Call of the Void' is that sudden urge to jump from a high place, even if you aren't suicidal.",
+            "In 1977, we received a signal from space that lasted 72 seconds. We still don't know where it came from.",
+            "Every day, you inhale about a liter of other people's dead skin cells.",
+            "The giant squid has eyes the size of frisbees.",
+            "THERE IS SOMEONE STANDING DIRECTLY BEHIND THE DOOR.",
+            "..."
+        ];
+
+        const betterFacts = [
+            "Sea otters hold hands when they sleep so they don't drift apart.",
+            "Norway once knighted a penguin. His name is Sir Nils Olav.",
+            "Blind people smile even if they've never seen a smile; it's a natural human instinct.",
+            "A group of flamingos is called a 'flamboyance'.",
+            "Bees 'dance' to tell their friends where the best flowers are.",
+            "Cows have regional accents depending on where they are from.",
+            "The voice of Mickey Mouse and the voice of Minnie Mouse got married in real life."
+        ];
+
+        function nextFact() {
+            const display = document.getElementById('fact-display');
+            const btn = document.getElementById('btn');
+            const sBtn = document.getElementById('secret-btn');
+            const body = document.body;
+
+            // 1/100 Chance to show secret button
+            if (!isSecretActive && Math.random() < 0.01) {
+                sBtn.style.display = "block";
+            }
+
+            const activeList = isSecretActive ? betterFacts : scaryFacts;
+
+            if (step < activeList.length) {
+                display.innerText = activeList[step];
+                
+                if (!isSecretActive) {
+                    // Darken logic
+                    let r = 255;
+                    let g = Math.max(255 - (step * 35), 0);
+                    let b = Math.max(255 - (step * 45), 0);
+                    if (step > 6) r = Math.max(255 - ((step - 6) * 80), 0);
+                    
+                    body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+                    if (step > 4) {
+                        body.style.color = "white";
+                        btn.style.borderColor = "white";
+                        btn.style.color = "white";
+                    }
+                    if (step === activeList.length - 1) {
+                        body.style.backgroundColor = "black";
+                        display.style.color = "red";
+                        btn.style.display = "none";
+                    }
+                }
+                step++;
+            }
+        }
+
+        function activateSecret() {
+            isSecretActive = true;
+            step = 0;
+            document.body.style.backgroundColor = "#fff0f5"; // Soft pink
+            document.body.style.color = "#d63384"; // Deep pink text
+            document.getElementById('btn').style.borderColor = "#d63384";
+            document.getElementById('btn').style.color = "#d63384";
+            document.getElementById('btn').style.display = "block";
+            document.getElementById('fact-display').classList.remove('glitch');
+            document.getElementById('fact-display').innerText = "The darkness fades. Here is something better.";
+            document.getElementById('secret-btn').style.display = "none";
+        }
+    </script>
+</body>
+</html>
